@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   TrendingUp, Users, ArrowRight, Cpu, Menu, X, ShieldCheck, Zap,
   Search, Activity, Target, BarChart3, Globe, AlertTriangle, FileText, Lock

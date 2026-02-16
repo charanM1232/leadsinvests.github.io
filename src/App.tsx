@@ -190,13 +190,13 @@ export default function App() {
         {/* HERO SECTION */}
         <section className="relative pt-44 lg:pt-60 pb-32 text-center px-6">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Verified Signal Network</span>
+            <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">LEADS</span>
             <h1 className="text-5xl md:text-8xl font-black tracking-[-0.04em] leading-[0.95] mb-8">
-              TRADING IS BETTER <br />
-              <span className="text-gray-500">WITHOUT THE NOISE.</span>
+              Stop Guessing. <br />
+              <span className="text-gray-500">Start Seeing Real Trades.</span>
             </h1>
             <p className="max-w-xl mx-auto text-gray-400 text-lg md:text-xl leading-relaxed mb-12 font-medium">
-              Join a collective of verified traders sharing high-alpha signals, threaded thesis, and real-time community engagement.
+              Most investing platforms show opinions. Leads show performance. Track real trades, learn from proven strategies, and connect with investors who actually deliver results.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button onClick={() => setIsWaitlistOpen(true)} className="group w-full sm:w-auto px-8 py-5 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center gap-3">
@@ -211,7 +211,7 @@ export default function App() {
               <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase italic">Stocks</div>
               <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase">Options</div>
               <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase italic">Crypto</div>
-              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase">Future</div>
+              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase">Futures</div>
             </div>
           </div>
         </section>
@@ -241,6 +241,165 @@ export default function App() {
             <BentoCard icon={Globe} title="Domestic Core" desc="Purpose-built for the US Markets. Connect with a focused hive of traders across all major exchanges." />
           </div>
         </section>
+
+        {/* THE PROBLEM SECTION */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-red-500/5 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">The Problem</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Financial social media is full of <span className="text-red-400">noise, hype,</span> and unverifiable claims.</h2>
+            <p className="max-w-2xl mx-auto text-gray-400 text-lg leading-relaxed">
+              Investors deserve transparency, accountability, and real data before making decisions. Leads was built to change that.
+            </p>
+          </div>
+        </section>
+
+        {/* WHAT LEADS DOES DIFFERENTLY */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">What Leads Does Differently</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Built Different. <span className="text-gray-500">Built Better.</span></h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
+              <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 text-emerald-500">
+                <ShieldCheck size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Verified Performance First</h3>
+              <p className="text-gray-400">Trades, insights, and track records — all focused on measurable results, not opinions.</p>
+            </div>
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
+              <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-500">
+                <Users size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-3">A Network Built for Serious Investors</h3>
+              <p className="text-gray-400">Connect with traders, analysts, and learners who value growth, accountability, and smarter investing.</p>
+            </div>
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
+              <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6 text-purple-500">
+                <BarChart3 size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Multi-Market Intelligence</h3>
+              <p className="text-gray-400">Stocks. Options. Crypto. Futures. One platform, real insight across markets.</p>
+            </div>
+            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
+              <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-6 text-amber-500">
+                <TrendingUp size={28} />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Monetize Credibility</h3>
+              <p className="text-gray-400">Consistent performance earns visibility, influence, and future monetization opportunities.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* WHY JOIN NOW */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-amber-500/5 border border-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Why Join Now</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Early users don't just join the platform, <span className="text-amber-400">they shape it.</span></h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { title: "Priority beta access", desc: "Get in early before the masses" },
+              { title: "Founding community status", desc: "Be recognized as an original member" },
+              { title: "Direct feedback channels", desc: "Shape features with your input" },
+              { title: "Early profile credibility", desc: "Build your reputation from day one" }
+            ].map((item, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent border border-white/5">
+                <div className="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 text-blue-400 font-black text-lg">
+                  {i + 1}
+                </div>
+                <h3 className="font-bold mb-2">{item.title}</h3>
+                <p className="text-gray-500 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-12">
+            <button onClick={() => setIsWaitlistOpen(true)} className="px-10 py-5 bg-amber-500 text-black rounded-2xl font-black uppercase tracking-widest hover:bg-amber-400 transition-all">
+              Secure Your Spot →
+            </button>
+          </div>
+        </section>
+
+        {/* OUR MISSION */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Our Mission</span>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8">
+              We're building the most <span className="text-emerald-400">transparent</span> investing community in finance.
+            </h2>
+            <p className="max-w-3xl mx-auto text-gray-400 text-xl leading-relaxed">
+              No hype. No fake gurus. Just performance, data, and real collaboration to help investors grow.
+            </p>
+          </div>
+        </section>
+
+        {/* WHO LEADS IS FOR */}
+        <section className="max-w-7xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-purple-500/5 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Who Leads Is For</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Everyone Serious About <span className="text-purple-400">Financial Growth</span></h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              "Investors are tired of misinformation",
+              "Traders who want accountability",
+              "Learners who want real examples",
+              "Creators ready to build credibility",
+              "Anyone serious about long-term financial growth"
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-4 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full" />
+                </div>
+                <span className="text-gray-300">{item}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ SECTION */}
+        <section className="max-w-4xl mx-auto px-6 py-24">
+          <div className="text-center mb-16">
+            <span className="inline-block py-1.5 px-4 rounded-full bg-gray-500/5 border border-gray-500/20 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">FAQ</span>
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Frequently Asked <span className="text-gray-500">Questions</span></h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              { q: "Does Leads provide financial advice?", a: "No. Leads provides tools, analytics, and community insights for educational purposes only." },
+              { q: "Will it stay free?", a: "Core features remain free. Premium analytics and creator tools may come later." },
+              { q: "When is the launch?", a: "Beta access is rolling in mid-May. Join the waitlist for priority updates." },
+              { q: "Do I need trading experience?", a: "No. Beginners and experienced investors are both welcome." }
+            ].map((item, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                <h3 className="font-bold mb-2 text-lg">{item.q}</h3>
+                <p className="text-gray-400">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* FINAL CALL TO ACTION */}
+        <section className="max-w-5xl mx-auto px-6 py-32 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 rounded-3xl blur-3xl" />
+            <div className="relative p-12 md:p-16 rounded-3xl bg-white/[0.02] border border-white/10">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
+                The future of investing is <span className="text-blue-400">transparent, collaborative,</span> and <span className="text-purple-400">performance driven.</span>
+              </h2>
+              <p className="text-gray-400 text-xl mb-10 max-w-2xl mx-auto">
+                Be part of it from day one.
+              </p>
+              <button onClick={() => setIsWaitlistOpen(true)} className="px-12 py-6 bg-blue-600 text-white rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] transition-all">
+                Join Leads Beta →
+              </button>
+            </div>
+          </motion.div>
+        </section>
       </main>
 
       {/* FOOTER */}
@@ -251,16 +410,18 @@ export default function App() {
               <TrendingUp className="text-blue-500" />
               <span className="font-black tracking-tighter text-xl">LEADS</span>
             </div>
-            <p className="text-gray-500 max-w-sm mb-8">The first meritocratic social network for traders. We don't care about your clout, we care about your performance.</p>
+            <p className="text-gray-500 max-w-sm mb-8">Leads provides educational financial tools only and does not offer financial advice. Investing involves risk. Always conduct independent research before making investment decisions.</p>
             <div>
               <h4 className="text-xs font-black uppercase tracking-widest mb-4">Contact Us</h4>
               <a href="mailto:lead.invests.co@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors">lead.invests.co@gmail.com</a>
             </div>
           </div>
           <div>
-            <h4 className="text-xs font-black uppercase tracking-widest mb-6">Protocol</h4>
+            <h4 className="text-xs font-black uppercase tracking-widest mb-6">Quick Links</h4>
             <ul className="space-y-4 text-gray-500 text-sm">
-              <li>Signals</li><li>Verification</li><li>Hubs</li><li>Merit API</li>
+              <li>Privacy Policy</li>
+              <li>Terms</li>
+              <li>Contact</li>
             </ul>
           </div>
           <div>
@@ -272,8 +433,8 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 text-gray-700 text-[10px] font-black tracking-[0.3em] uppercase">
-          © 2026 Lead Protocol. Deployment Beta_v2.0.4
+        <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 text-gray-700 text-[10px] font-black tracking-[0.3em] uppercase text-center">
+          © 2026 Leads. All rights reserved.
         </div>
       </footer>
 
@@ -289,9 +450,6 @@ export default function App() {
             >
               <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
                 <div className="flex items-center gap-3">
-                  {modalContent === 'risk' && <AlertTriangle className="text-amber-500" size={24} />}
-                  {modalContent === 'privacy' && <Lock className="text-blue-500" size={24} />}
-                  {modalContent === 'terms' && <FileText className="text-emerald-500" size={24} />}
                   <h2 className="text-xl font-black uppercase tracking-tight">
                     {modalContent === 'risk' && 'Beta Risk Disclosure'}
                     {modalContent === 'privacy' && 'Beta Privacy Policy'}

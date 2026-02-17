@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
-  TrendingUp, Users, ArrowRight, Cpu, Menu, X, ShieldCheck, Zap,
-  Search, Activity, Target, BarChart3, Globe, AlertTriangle, FileText, Lock
+  TrendingUp, Users, ArrowRight, Menu, X, ShieldCheck, Zap,
+  Search, Target, BarChart3, Globe, CheckCircle2, DollarSign, Rocket, Award, Building2, PieChart
 } from 'lucide-react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring, useInView } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -11,8 +11,58 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// --- Darker Cinematic Bubble Components ---
+// --- Animation Variants (Apple-style) ---
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } }
+};
 
+const staggerItem = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }
+};
+
+// --- Animated Section Wrapper ---
+const AnimatedSection = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
+  return (
+    <motion.section
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={{
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: delay } }
+      }}
+      className={className}
+    >
+      {children}
+    </motion.section>
+  );
+};
+
+// --- Animated Card with Hover ---
+const AnimatedCard = ({ children, className, delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) => {
+  const ref = React.useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4, transition: { duration: 0.3 } }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// --- Parallax Bubble Components ---
 const ParallaxBubble = ({
   size, opacity, initialX, initialY, speed
 }: {
@@ -72,75 +122,73 @@ const AnimatedBackground = () => {
 
 // --- CONTENT COMPONENTS ---
 
-const SignalTerminal = () => {
-  const signals = [
-    { pair: "BTC/USDT", type: "LONG", price: "48,230", target: "52,000", acc: "92%" },
-    { pair: "ETH/USDT", type: "SHORT", price: "2,450", target: "2,100", acc: "88%" },
-    { pair: "NVDA", type: "LONG", price: "720.45", target: "800", acc: "95%" },
-  ];
-
-  return (
-    <div className="bg-[#020617]/80 backdrop-blur-xl rounded-2xl border border-white/10 p-4 font-mono text-xs shadow-2xl relative overflow-hidden group">
-      <div className="flex items-center gap-2 mb-4 border-b border-white/5 pb-2">
-        <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
-        </div>
-        <span className="text-gray-500 ml-2">PRO_SIGNAL_FEED_V4.0</span>
-      </div>
-      <div className="space-y-3">
-        {signals.map((s, i) => (
-          <div key={i} className="flex justify-between items-center group-hover:bg-white/5 p-2 rounded-lg transition-colors">
-            <div className="flex flex-col">
-              <span className="text-gray-400">{s.pair}</span>
-              <span className={s.type === 'LONG' ? 'text-emerald-400' : 'text-rose-400'}>{s.type} @ {s.price}</span>
-            </div>
-            <div className="text-right">
-              <div className="text-blue-400">Target: {s.target}</div>
-              <div className="text-[10px] text-gray-600">Accuracy: {s.acc}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 pt-2 border-t border-white/5 flex items-center justify-between text-[10px]">
-        <span className="text-emerald-500 flex items-center gap-1">
-          <Activity size={10} /> LIVE_CONNECTION_STABLE
-        </span>
-        <span className="animate-pulse">_</span>
-      </div>
-    </div>
-  );
-};
-
-const BentoCard = ({ children, className, title, desc, icon: Icon, span = false }: any) => (
-  <motion.div
-    whileHover={{ y: -5 }}
-    className={cn(
-      "relative p-8 rounded-[2.5rem] bg-white/[0.02] border border-white/5 overflow-hidden group hover:border-blue-500/30 transition-all",
-      span ? "md:col-span-2" : "col-span-1",
-      className
-    )}
+const SectionHeader = ({ badge, title, subtitle, delay = 0 }: { badge?: string; title: string; subtitle?: string; delay?: number }) => (
+  <motion.div 
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+    className="text-center mb-16"
   >
-    <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-      <Icon size={120} strokeWidth={1} />
-    </div>
-    <div className="relative z-10">
-      <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 text-blue-500">
-        <Icon size={24} />
-      </div>
-      <h3 className="text-2xl font-bold mb-3 tracking-tight">{title}</h3>
-      <p className="text-gray-400 leading-relaxed text-sm lg:text-base max-w-[280px]">{desc}</p>
-      {children}
-    </div>
+    {badge && (
+      <motion.span 
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: delay + 0.2 }}
+        className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6"
+      >
+        {badge}
+      </motion.span>
+    )}
+    <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">{title}</h2>
+    {subtitle && <p className="max-w-2xl mx-auto text-gray-400 text-lg leading-relaxed">{subtitle}</p>}
   </motion.div>
 );
+
+const FeatureCard = ({ icon: Icon, title, description, benefits, delay = 0 }: { icon: any; title: string; description: string; benefits?: string[]; delay?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 40 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    whileHover={{ y: -6, transition: { duration: 0.3 } }}
+    className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all cursor-default"
+  >
+    <motion.div 
+      className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-500"
+      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+    >
+      <Icon size={28} />
+    </motion.div>
+    <h3 className="text-xl font-bold mb-3">{title}</h3>
+    <p className="text-gray-400 mb-4">{description}</p>
+    {benefits && benefits.length > 0 && (
+      <ul className="space-y-2">
+        {benefits.map((benefit, i) => (
+          <motion.li 
+            key={i} 
+            className="flex items-start gap-2 text-sm text-gray-300"
+            initial={{ opacity: 0, x: -10 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: delay + 0.1 * i }}
+          >
+            <CheckCircle2 size={16} className="text-emerald-500 flex-shrink-0 mt-0.5" />
+            {benefit}
+          </motion.li>
+        ))}
+      </ul>
+    )}
+  </motion.div>
+);
+
+import React from 'react';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
   const [isCommunityOpen, setIsCommunityOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<'risk' | 'privacy' | 'terms' | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -153,417 +201,565 @@ export default function App() {
     <div className="min-h-screen relative text-white font-sans selection:bg-blue-500/30 overflow-x-hidden">
       <AnimatedBackground />
 
-      <nav className={cn(
-        "fixed w-full z-50 transition-all duration-500 px-6",
-        scrolled ? "bg-black/60 backdrop-blur-md py-4 border-b border-white/10" : "bg-transparent py-8"
-      )}>
+      {/* Navbar - Apple-style transform */}
+      <motion.nav 
+        className={cn(
+          "fixed w-full z-50 px-6",
+          scrolled ? "bg-black/80 backdrop-blur-xl py-4 border-b border-white/5" : "bg-transparent py-8"
+        )}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            <div className="p-2 bg-blue-600 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.4)]">
+          <motion.div 
+            className="flex items-center gap-3 cursor-pointer" 
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <motion.div 
+              className="p-2 bg-blue-600 rounded-lg shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+              whileHover={{ scale: 1.05 }}
+            >
               <TrendingUp size={20} />
-            </div>
+            </motion.div>
             <span className="text-xl font-black tracking-tighter uppercase transition-opacity hover:opacity-80">Leads</span>
-          </div>
+          </motion.div>
 
           <div className="hidden md:flex items-center gap-2">
-            <button onClick={() => setIsCommunityOpen(true)} className="px-6 py-2.5 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-blue-500 transition-all">Community</button>
-            <button onClick={() => setIsWaitlistOpen(true)} className="px-6 py-2.5 bg-white text-black text-xs font-black uppercase tracking-widest rounded-full hover:bg-gray-200 transition-all">Interest Form</button>
+            <motion.button 
+              onClick={() => setIsCommunityOpen(true)} 
+              className="px-6 py-2.5 bg-blue-600 text-white text-xs font-black uppercase tracking-widest rounded-full hover:bg-blue-500 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Community
+            </motion.button>
+            <motion.button 
+              onClick={() => setIsWaitlistOpen(true)} 
+              className="px-6 py-2.5 bg-white text-black text-xs font-black uppercase tracking-widest rounded-full hover:bg-gray-200 transition-all"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Join Waitlist
+            </motion.button>
           </div>
 
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden text-gray-400 transition-colors hover:text-white">
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="fixed inset-0 z-40 md:hidden bg-black flex flex-col p-8 pt-24 text-center">
-            <button onClick={() => {setIsCommunityOpen(true); setIsMenuOpen(false)}} className="mb-8 px-8 py-5 bg-blue-600 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-500 transition-all">Community</button>
-            <button onClick={() => {setIsWaitlistOpen(true); setIsMenuOpen(false)}} className="mt-8 px-8 py-5 bg-white text-black rounded-2xl font-black uppercase tracking-widest hover:bg-gray-200 transition-all">Interest Form</button>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: -20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            exit={{ opacity: 0, scale: 0.95, y: -20 }} 
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-40 md:hidden bg-black flex flex-col p-8 pt-24 text-center"
+          >
+            <motion.button 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              onClick={() => {setIsCommunityOpen(true); setIsMenuOpen(false)}} 
+              className="mb-8 px-8 py-5 bg-blue-600 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-500 transition-all"
+            >
+              Community
+            </motion.button>
+            <motion.button 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              onClick={() => {setIsWaitlistOpen(true); setIsMenuOpen(false)}} 
+              className="mt-8 px-8 py-5 bg-white text-black rounded-2xl font-black uppercase tracking-widest hover:bg-gray-200 transition-all"
+            >
+              Join Waitlist
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>
 
       <main>
-        {/* HERO SECTION */}
-        <section className="relative pt-44 lg:pt-60 pb-32 text-center px-6">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">LEADS</span>
-            <h1 className="text-5xl md:text-8xl font-black tracking-[-0.04em] leading-[0.95] mb-8">
-              Stop Guessing. <br />
-              <span className="text-gray-500">Start Seeing Real Trades.</span>
-            </h1>
-            <p className="max-w-xl mx-auto text-gray-400 text-lg md:text-xl leading-relaxed mb-12 font-medium">
-              Most investing platforms show opinions. Leads show performance. Track real trades, learn from proven strategies, and connect with investors who actually deliver results.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button onClick={() => setIsWaitlistOpen(true)} className="group w-full sm:w-auto px-8 py-5 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center gap-3">
-                Interest Form
-                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-              </button>
-            </div>
+        {/* OPENING SECTION - Hero with staggered animation */}
+        <section className="relative pt-44 lg:pt-52 pb-20 text-center px-6 overflow-hidden">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            className="relative z-10"
+          >
+            <motion.h1 
+              variants={staggerItem}
+              className="text-5xl md:text-7xl font-black tracking-[-0.03em] leading-[0.95] mb-8"
+            >
+              Trading is Better <br />
+              <span className="text-gray-500">Without the Noise.</span>
+            </motion.h1>
+            <motion.p 
+              variants={staggerItem}
+              className="max-w-3xl mx-auto text-gray-400 text-lg md:text-xl leading-relaxed mb-12 font-medium"
+            >
+              Investors chase FOMO, copy trades without context, and pay for communities with no clear performance benchmarks. We're building a better way.
+            </motion.p>
+            <motion.div 
+              variants={staggerItem}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <motion.button 
+                onClick={() => setIsWaitlistOpen(true)} 
+                className="group w-full sm:w-auto px-8 py-5 bg-blue-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-all flex items-center justify-center gap-3"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Join the Waitlist
+                <motion.span 
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <ArrowRight size={18} />
+                </motion.span>
+              </motion.button>
+            </motion.div>
+            
+            {/* Asset Classes - Crypto, Futures, Stocks */}
+            <motion.div 
+              variants={staggerItem}
+              className="mt-16 flex flex-wrap justify-center gap-4"
+            >
+              {['Crypto', 'Futures', 'Stocks', 'Options'].map((asset, i) => (
+                <motion.span
+                  key={asset}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 + i * 0.1, duration: 0.4 }}
+                  className="px-6 py-3 rounded-full bg-white/5 border border-white/10 text-base text-gray-300 font-medium"
+                >
+                  {asset}
+                </motion.span>
+              ))}
+            </motion.div>
           </motion.div>
-
-          <div className="mt-32 border-y border-white/5 py-10 opacity-30">
-            <div className="max-w-7xl mx-auto px-6 overflow-hidden flex flex-wrap justify-center gap-12 lg:gap-24 grayscale">
-              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase italic">Stocks</div>
-              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase">Options</div>
-              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase italic">Crypto</div>
-              <div className="flex items-center gap-2 font-black text-2xl tracking-tighter uppercase">Futures</div>
-            </div>
-          </div>
+          
+          {/* Subtle gradient overlay */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#020617] pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+          />
         </section>
 
-        {/* BENTO SECTION */}
-        <section id="features" className="max-w-7xl mx-auto px-6 py-24">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <BentoCard span icon={Target} title="Proof of Accuracy" desc="Every trade is logged, tracked and verified. We measure performance, not followers.">
-              <div className="mt-8 pointer-events-none">
-                <SignalTerminal />
-              </div>
-            </BentoCard>
-            <BentoCard icon={Users} title="Build Your Community" desc=" Join or create a community that is personalized and dedicated hubs for all markets." />
-            <BentoCard icon={BarChart3} title="Earn Merits" desc="Your reputation is built on your performance. More merit equals more trust." />
-            <BentoCard span icon={Cpu} title="Automated Analytics" desc="Deep stats on your historical edge. Understand your drawdown, profit factor, and accuracy metrics automatically." className="bg-gradient-to-br from-[#0F172A] to-[#1E293B]">
-              <div className="mt-8 flex gap-2 overflow-hidden h-24 items-end">
-                {[12, 45, 23, 67, 23, 45, 89, 67, 45, 34, 56, 87].map((h, i) => (
-                  <div key={i} className="flex-1 bg-blue-500/20 rounded-t-md relative group">
-                    <motion.div initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: i * 0.05, duration: 1 }} className="absolute bottom-0 w-full bg-blue-500 rounded-t-md" />
-                  </div>
-                ))}
-              </div>
-            </BentoCard>
-            <BentoCard icon={Search} title="Signal Filtering" desc="Cut the fluff. Use intelligent filters to find the specific setups and assets you care about most." />
-            <BentoCard span icon={ShieldCheck} title="Private Networking" desc="Your edge is your property. We built top-tier security into the core to keep your signals and strategies private." className="bg-gradient-to-bl from-[#0F172A] to-[#020617]" />
-            <BentoCard span icon={Zap} title="Real-Time Sync" desc="Speed is everything in the pit. Experience a zero-lag environment where every signal hits your screen instantly." className="bg-gradient-to-tr from-[#0F172A] to-[#1E3A8A]" />
-            <BentoCard icon={Globe} title="Domestic Core" desc="Purpose-built for the US Markets. Connect with a focused hive of traders across all major exchanges." />
-          </div>
-        </section>
-
-        {/* THE PROBLEM SECTION */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-red-500/5 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">The Problem</span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Financial social media is full of <span className="text-red-400">noise, hype,</span> and unverifiable claims.</h2>
-            <p className="max-w-2xl mx-auto text-gray-400 text-lg leading-relaxed">
-              Investors deserve transparency, accountability, and real data before making decisions. Leads was built to change that.
-            </p>
-          </div>
-        </section>
-
-        {/* WHAT LEADS DOES DIFFERENTLY */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">What Leads Does Differently</span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Built Different. <span className="text-gray-500">Built Better.</span></h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
-              <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center mb-6 text-emerald-500">
-                <ShieldCheck size={28} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Verified Performance First</h3>
-              <p className="text-gray-400">Trades, insights, and track records — all focused on measurable results, not opinions.</p>
-            </div>
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
-              <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-500">
-                <Users size={28} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">A Network Built for Serious Investors</h3>
-              <p className="text-gray-400">Connect with traders, analysts, and learners who value growth, accountability, and smarter investing.</p>
-            </div>
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
-              <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-6 text-purple-500">
-                <BarChart3 size={28} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Multi-Market Intelligence</h3>
-              <p className="text-gray-400">Stocks. Options. Crypto. Futures. One platform, real insight across markets.</p>
-            </div>
-            <div className="p-8 rounded-3xl bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all">
-              <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center mb-6 text-amber-500">
-                <TrendingUp size={28} />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Monetize Credibility</h3>
-              <p className="text-gray-400">Consistent performance earns visibility, influence, and future monetization opportunities.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* WHY JOIN NOW */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-amber-500/5 border border-amber-500/20 text-amber-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Why Join Now</span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Early users don't just join the platform, <span className="text-amber-400">they shape it.</span></h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: "Priority beta access", desc: "Get in early before the masses" },
-              { title: "Founding community status", desc: "Be recognized as an original member" },
-              { title: "Direct feedback channels", desc: "Shape features with your input" },
-              { title: "Early profile credibility", desc: "Build your reputation from day one" }
-            ].map((item, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-gradient-to-b from-white/[0.02] to-transparent border border-white/5">
-                <div className="w-10 h-10 bg-blue-600/20 rounded-xl flex items-center justify-center mb-4 text-blue-400 font-black text-lg">
-                  {i + 1}
-                </div>
-                <h3 className="font-bold mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <button onClick={() => setIsWaitlistOpen(true)} className="px-10 py-5 bg-amber-500 text-black rounded-2xl font-black uppercase tracking-widest hover:bg-amber-400 transition-all">
-              Secure Your Spot →
-            </button>
-          </div>
-        </section>
-
-        {/* OUR MISSION */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-emerald-500/5 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Our Mission</span>
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-8">
-              We're building the most <span className="text-emerald-400">transparent</span> investing community in finance.
-            </h2>
-            <p className="max-w-3xl mx-auto text-gray-400 text-xl leading-relaxed">
-              No hype. No fake gurus. Just performance, data, and real collaboration to help investors grow.
-            </p>
-          </div>
-        </section>
-
-        {/* WHO LEADS IS FOR */}
-        <section className="max-w-7xl mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-purple-500/5 border border-purple-500/20 text-purple-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Who Leads Is For</span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Everyone Serious About <span className="text-purple-400">Financial Growth</span></h2>
-          </div>
+        {/* PROBLEM SECTION */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24">
+          <SectionHeader 
+            badge="The Problem" 
+            title="Too Much Hype. Not Enough Proof."
+            subtitle="Investors chase FOMO, copy trades without context, and pay for communities with no clear performance benchmarks."
+            delay={0.1}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              "Investors are tired of misinformation",
-              "Traders who want accountability",
-              "Learners who want real examples",
-              "Creators ready to build credibility",
-              "Anyone serious about long-term financial growth"
+              { title: "Selective Transparency", desc: "Wins are highlighted. Losses disappear. Investors rarely see the full picture..." },
+              { title: "Inconsistent Track Records", desc: "Many trade ideas look good but lack consistent verifiable results." },
+              { title: "Credibility is Hard to Measure", desc: "Follower counts and engagement often replace actual performance as trust signals." },
+              { title: "FOMO-Driven Decisions", desc: "Hype cycles push investors toward reactive trades instead of informed strategies." },
+              { title: "Unclear Value From Paid Communities", desc: "Subscription fees are common, but clear performance benchmarks are often missing." },
+              { title: "Visibility Over Performance", desc: "Algorithms reward engagement and activity, not necessarily consistent investing outcomes." }
             ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                <div className="w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <div className="w-2 h-2 bg-purple-400 rounded-full" />
-                </div>
-                <span className="text-gray-300">{item}</span>
-              </div>
+              <AnimatedCard key={i} delay={0.1 * i} className="p-6 rounded-2xl bg-red-500/5 border border-red-500/10">
+                <h3 className="font-bold mb-2 text-red-400">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
+              </AnimatedCard>
             ))}
           </div>
-        </section>
+        </AnimatedSection>
 
-        {/* FAQ SECTION */}
-        <section className="max-w-4xl mx-auto px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="inline-block py-1.5 px-4 rounded-full bg-gray-500/5 border border-gray-500/20 text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">FAQ</span>
-            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-6">Frequently Asked <span className="text-gray-500">Questions</span></h2>
+        {/* SOLUTION SECTION */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24 bg-white/[0.02]">
+          <SectionHeader 
+            badge="Our Mission" 
+            title="Performance-Driven Social Investing"
+            subtitle="No hype. No disappearing losses. Just trackable performance and smarter investing decisions."
+            delay={0.1}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <FeatureCard 
+              icon={Target} 
+              title="Structured Trade Posts"
+              description="Investors share trades with defined entry, exit, and risk parameters so performance can be evaluated objectively."
+              benefits={["Clear benchmarks for every trade", "Full trade lifecycle tracking", "Consistent performance records"]}
+              delay={0.1}
+            />
+            <FeatureCard 
+              icon={ShieldCheck} 
+              title="Verified Performance Tracking"
+              description="Every trade is tracked consistently, creating transparent performance histories readily available to you."
+              benefits={["Wins and losses recorded consistently", "Reliable track records over time", "Data-driven credibility"]}
+              delay={0.2}
+            />
+            <FeatureCard 
+              icon={Award} 
+              title="Reputation Built on Results"
+              description="Credibility grows from consistent performance, not engagement or follower counts."
+              benefits={["Reputation built on results", "Visibility tied to performance", "Incentives aligned with accuracy"]}
+              delay={0.3}
+            />
+            <FeatureCard 
+              icon={BarChart3} 
+              title="Actionable Performance Insights"
+              description="Turn completed trades into actionable insights — tracking accuracy, risk patterns, and real performance over time."
+              benefits={["Learn from real outcomes", "Identify consistent performers", "Make informed decisions"]}
+              delay={0.4}
+            />
           </div>
-          <div className="space-y-4">
+        </AnimatedSection>
+
+        {/* MARKET OPPORTUNITY */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24 bg-white/[0.02]">
+          <SectionHeader 
+            badge="Market Opportunity" 
+            title="A Rapidly Growing Space"
+            subtitle="Social investing is exploding — and the need for transparency has never been greater."
+            delay={0.1}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { q: "Does Leads provide financial advice?", a: "No. Leads provides tools, analytics, and community insights for educational purposes only." },
-              { q: "Will it stay free?", a: "Core features remain free. Premium analytics and creator tools may come later." },
-              { q: "When is the launch?", a: "Beta access is rolling in mid-May. Join the waitlist for priority updates." },
-              { q: "Do I need trading experience?", a: "No. Beginners and experienced investors are both welcome." }
+              { icon: Users, title: "100M+", desc: "Retail trading accounts in the US alone (FINRA 2024)" },
+              { icon: Rocket, title: "$4.2T", desc: "Projected social trading market size by 2030 (Grand View Research)" },
+              { icon: Search, title: "87%", desc: "Of retail traders use social media for investment ideas (SEC Study)" },
+              { icon: PieChart, title: "72%", desc: "Of Gen Z investors trust social influencers over financial advisors (CNBC)" }
             ].map((item, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
-                <h3 className="font-bold mb-2 text-lg">{item.q}</h3>
-                <p className="text-gray-400">{item.a}</p>
-              </div>
+              <AnimatedCard key={i} delay={0.1 * i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-center">
+                <motion.div 
+                  className="text-4xl font-black text-blue-400 mb-2"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 * i + 0.2, type: "spring" }}
+                >
+                  {item.title}
+                </motion.div>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
+              </AnimatedCard>
             ))}
           </div>
-        </section>
+        </AnimatedSection>
 
-        {/* FINAL CALL TO ACTION */}
-        <section className="max-w-5xl mx-auto px-6 py-32 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
+        {/* BUSINESS MODEL */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24">
+          <SectionHeader 
+            badge="Business Model" 
+            title="Built Around Transparency"
+            subtitle="Our revenue model aligns success with performance, not hype."
+            delay={0.1}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: DollarSign, title: "Creator Revenue Share", desc: "Top performers earn more. No inflated follower counts, just real results." },
+              { icon: BarChart3, title: "Premium Insights", desc: "Advanced analytics for serious investors who want deeper data." },
+              { icon: Users, title: "Education That Works", desc: "Creators monetize through verified performance, not empty promises." },
+              { icon: Zap, title: "Targeted Discovery", desc: "Relevant financial products, not noisy ads. Because context matters." }
+            ].map((item, i) => (
+              <AnimatedCard key={i} delay={0.1 * i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                <motion.div 
+                  className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4 text-emerald-500"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <item.icon size={24} />
+                </motion.div>
+                <h3 className="font-bold mb-2">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
+              </AnimatedCard>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* TRACTION & PROGRESS */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24 bg-white/[0.02]">
+          <SectionHeader 
+            badge="Traction & Progress" 
+            title="Where We Are Today"
+            delay={0.1}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {[
+              { title: "MVP", desc: "Core platform under development", color: "text-blue-400" },
+              { title: "Beta", desc: "Coming soon, join the waitlist", color: "text-amber-400" },
+              { title: "Growing", desc: "Early interest & feedback phase", color: "text-emerald-400" }
+            ].map((item, i) => (
+              <AnimatedCard key={i} delay={0.1 * i} className="text-center p-8 rounded-2xl bg-white/[0.02] border border-white/5">
+                <motion.div 
+                  className={`text-4xl font-black ${item.color} mb-2`}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: 0.1 * i + 0.2, type: "spring" }}
+                >
+                  {item.title}
+                </motion.div>
+                <p className="text-gray-400">{item.desc}</p>
+              </AnimatedCard>
+            ))}
+          </div>
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <h3 className="text-xl font-bold mb-4">Next Steps</h3>
+            <ul className="text-gray-400 space-y-2 inline-block text-left">
+              {[
+                "Expand beta access",
+                "Strengthen analytics & reputation features",
+                "Build community foundation"
+              ].map((item, i) => (
+                <motion.li 
+                  key={i} 
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.5 + 0.1 * i }}
+                >
+                  <CheckCircle2 size={16} className="text-emerald-500" /> {item}
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+        </AnimatedSection>
+
+        {/* TEAM SECTION */}
+        <AnimatedSection className="max-w-7xl mx-auto px-6 py-24 bg-white/[0.02]">
+          <SectionHeader 
+            badge="Team" 
+            title="Built by Investors, For Investors"
+            delay={0.1}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { role: "CEO", name: "Team Lead", desc: "Vision & product direction. Ensuring transparency stays at the core of everything we build." },
+              { role: "CTO", name: "Technical Lead", desc: "Building the credibility infrastructure, reputation systems, and backend architecture." },
+              { role: "Backend Dev", name: "Engineering", desc: "Community features, database architecture, and creator progression systems." },
+              { role: "Frontend Dev", name: "Design Lead", desc: "UI/UX design and platform usability for an intuitive experience." }
+            ].map((member, i) => (
+              <AnimatedCard key={i} delay={0.1 * i} className="p-6 rounded-2xl bg-white/[0.02] border border-white/5 text-center">
+                <motion.div 
+                  className="w-16 h-16 bg-blue-500/20 rounded-full mx-auto mb-4 flex items-center justify-center"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                >
+                  <Building2 className="text-blue-400" size={24} />
+                </motion.div>
+                <div className="text-blue-400 text-xs font-black uppercase tracking-wider mb-1">{member.role}</div>
+                <h3 className="font-bold mb-2">{member.name}</h3>
+                <p className="text-gray-400 text-sm">{member.desc}</p>
+              </AnimatedCard>
+            ))}
+          </div>
+        </AnimatedSection>
+
+        {/* CLOSING PITCH */}
+        <AnimatedSection className="max-w-5xl mx-auto px-6 py-32 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="relative"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 rounded-3xl blur-3xl" />
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-blue-400/5 to-blue-500/10 rounded-3xl blur-3xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.2 }}
+            />
             <div className="relative p-12 md:p-16 rounded-3xl bg-white/[0.02] border border-white/10">
-              <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-6">
-                The future of investing is <span className="text-blue-400">transparent, collaborative,</span> and <span className="text-purple-400">performance driven.</span>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-8">
+                Join Us in Building the Future of <motion.span 
+                  className="text-blue-400"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.3 }}
+                >
+                  Transparent Investing
+                </motion.span>
               </h2>
-              <p className="text-gray-400 text-xl mb-10 max-w-2xl mx-auto">
-                Be part of it from day one.
-              </p>
-              <button onClick={() => setIsWaitlistOpen(true)} className="px-12 py-6 bg-blue-600 text-white rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] transition-all">
-                Join Leads Beta →
-              </button>
+              <motion.p 
+                className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+              >
+                Social investing has grown rapidly, but transparency hasn't kept pace. We're changing that, one verified track record at a time.
+              </motion.p>
+              <motion.button 
+                onClick={() => setIsWaitlistOpen(true)} 
+                className="px-12 py-6 bg-blue-600 text-white rounded-2xl font-black text-lg uppercase tracking-widest hover:bg-blue-500 hover:shadow-[0_0_40px_rgba(37,99,235,0.4)] transition-all"
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Join the Waitlist →
+              </motion.button>
             </div>
           </motion.div>
-        </section>
+        </AnimatedSection>
+
+        {/* FAQ SECTION */}
+        <AnimatedSection className="max-w-4xl mx-auto px-6 py-24">
+          <SectionHeader 
+            badge="FAQ" 
+            title="Frequently Asked Questions"
+            delay={0.1}
+          />
+          <div className="space-y-4">
+            {[
+              { q: "How is Leads different from existing social investing platforms?", a: "We standardize trade publishing and tracking with defined entry, take-profit, and stop-loss benchmarks. Credibility builds from verified results, not follower counts." },
+              { q: "Why will investors use this instead of social media?", a: "We provide reliable performance visibility, reduced speculation and hype, clearer learning from real outcomes, and a stronger accountability framework." },
+              { q: "How does Leads make money?", a: "Tiered creator monetization (revenue share), premium analytics subscriptions, education ecosystem opportunities, and targeted ads in the FYP feed (supplemental only)." },
+              { q: "Are ads the primary revenue driver?", a: "No — ads are supplemental. Our focus remains on building credibility infrastructure first." },
+              { q: "Where are you today?", a: "MVP actively being built (~1.5 months), landing page recently launched, early interest and feedback phase underway." },
+              { q: "How do you ensure trade credibility?", a: "Structured entry, take-profit, stop-loss benchmarks; trades tracked until completion; consistent performance recording." },
+              { q: "What prevents manipulation or hype trading?", a: "Merit-based reputation system, long-term performance visibility, incentives aligned with transparency." },
+              { q: "What's your competitive moat?", a: "Compounding performance data, credibility infrastructure, incentive-aligned reputation system, community built around verified results." },
+              { q: "Are you a brokerage or advisor?", a: "No — we're a platform for transparency and discussion, not providing investment advice." },
+              { q: "Where do you see Leads long term?", a: "Becoming the transparency standard for social investing, expanding analytics and education ecosystem, building a global investor credibility network." }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.05 * i }}
+              >
+                <details className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 cursor-pointer">
+                  <summary className="flex items-center justify-between font-bold list-none">
+                    <span>{item.q}</span>
+                    <motion.span
+                      animate={{ rotate: 0 }}
+                      className="text-gray-500"
+                    >
+                      <ArrowRight className="transition-transform group-open:rotate-90" size={18} />
+                    </motion.span>
+                  </summary>
+                  <motion.p 
+                    className="mt-4 text-gray-400"
+                    initial={{ opacity: 0, height: 0 }}
+                    whileInView={{ opacity: 1, height: "auto" }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {item.a}
+                  </motion.p>
+                </details>
+              </motion.div>
+            ))}
+          </div>
+        </AnimatedSection>
       </main>
 
       {/* FOOTER */}
-      <footer className="py-24 border-t border-white/5 bg-black/40">
+      <motion.footer 
+        className="py-24 border-t border-white/5 bg-black/40"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-2">
             <div className="flex items-center gap-2 mb-6">
               <TrendingUp className="text-blue-500" />
               <span className="font-black tracking-tighter text-xl">LEADS</span>
             </div>
-            <p className="text-gray-500 max-w-sm mb-8">Leads provides educational financial tools only and does not offer financial advice. Investing involves risk. Always conduct independent research before making investment decisions.</p>
+            <p className="text-gray-500 max-w-sm mb-8">
+              Building the most transparent investing community in finance. No hype. No fake gurus. Just performance and data.
+            </p>
             <div>
-              <h4 className="text-xs font-black uppercase tracking-widest mb-4">Contact Us</h4>
+              <h4 className="text-xs font-black uppercase tracking-widest mb-4">Contact</h4>
               <a href="mailto:lead.invests.co@gmail.com" className="text-blue-400 hover:text-blue-300 transition-colors">lead.invests.co@gmail.com</a>
             </div>
           </div>
           <div>
-            <h4 className="text-xs font-black uppercase tracking-widest mb-6">Quick Links</h4>
+            <h4 className="text-xs font-black uppercase tracking-widest mb-6">Platform</h4>
             <ul className="space-y-4 text-gray-500 text-sm">
-              <li>Privacy Policy</li>
-              <li>Terms</li>
-              <li>Contact</li>
+              <li>Features</li>
+              <li>Pricing</li>
+              <li>About</li>
             </ul>
           </div>
           <div>
             <h4 className="text-xs font-black uppercase tracking-widest mb-6">Legal</h4>
             <ul className="space-y-4 text-gray-500 text-sm">
-              <li className="hover:text-white cursor-pointer transition-colors" onClick={() => setModalContent('risk')}>Risk Disclosure</li>
-              <li className="hover:text-white cursor-pointer transition-colors" onClick={() => setModalContent('privacy')}>Privacy</li>
-              <li className="hover:text-white cursor-pointer transition-colors" onClick={() => setModalContent('terms')}>Terms</li>
+              <li>Privacy Policy</li>
+              <li>Terms of Service</li>
+              <li>Risk Disclosure</li>
             </ul>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 text-gray-700 text-[10px] font-black tracking-[0.3em] uppercase text-center">
           © 2026 Leads. All rights reserved.
         </div>
-      </footer>
+      </motion.footer>
 
-      {/* DYNAMIC LEGAL MODAL */}
-      <AnimatePresence>
-        {modalContent && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/90 backdrop-blur-xl">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: 20 }}
-              className="w-full max-w-3xl max-h-[85vh] bg-[#0F172A] border border-white/10 rounded-[2rem] overflow-hidden flex flex-col relative shadow-2xl"
-            >
-              <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-xl font-black uppercase tracking-tight">
-                    {modalContent === 'risk' && 'Beta Risk Disclosure'}
-                    {modalContent === 'privacy' && 'Beta Privacy Policy'}
-                    {modalContent === 'terms' && 'Beta Terms & Conditions'}
-                  </h2>
-                </div>
-                <button onClick={() => setModalContent(null)} className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-400 hover:text-white">
-                  <X size={24}/>
-                </button>
-              </div>
-              
-              <div className="p-8 overflow-y-auto custom-scrollbar text-sm leading-relaxed text-gray-400 space-y-8 prose prose-invert max-w-none">
-                {modalContent === 'risk' && (
-                  <>
-                    <p className="font-bold text-white italic">Effective Date: February 2026</p>
-                    <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl text-amber-200/80">
-                      <strong>IMPORTANT NOTICE:</strong> This platform is currently in a beta testing phase. Features may change, malfunction, or be removed at any time. By joining the beta waitlist, Discord community, early access program, interest forms, or using the beta version of the App, you acknowledge that you have read, understood, and agreed to the risks and conditions described below.
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">1. Beta Software Status</h3>
-                      <p>This App is a pre release product intended for testing, feedback, and evaluation. It may contain bugs, inaccuracies, incomplete features, data inconsistencies, or unexpected system behavior. The platform makes no guarantees regarding stability, reliability, or feature availability during the beta phase.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">2. No Financial or Professional Advice</h3>
-                      <p>The App is not a broker dealer, investment adviser, financial planner, legal adviser, or tax professional. All analytics, trade ideas, rankings, educational materials, and community content are provided strictly for informational and educational purposes only.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">3. Elevated Risk Due to Beta Environment</h3>
-                      <p>Because this is a beta environment, data, analytics, scoring systems, performance statistics, and social trading features may be inaccurate, incomplete, delayed, or experimental. Users should not rely on beta information for real financial decisions.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">4. High Risk Nature of Trading</h3>
-                      <p>Trading securities, cryptocurrencies, derivatives, foreign exchange, commodities, or other financial instruments involves significant risk. Users may lose part or all of their capital. Market conditions are volatile and unpredictable.</p>
-                    </div>
-                    <div className="pt-6 border-t border-white/5">
-                      <p className="text-[10px] font-bold text-gray-600 uppercase">Aknowledgment: I understand this platform is currently in beta testing. I acknowledge that features, analytics, and data may be experimental or inaccurate. I accept the risks associated with using a beta financial platform.</p>
-                    </div>
-                  </>
-                )}
-
-                {modalContent === 'privacy' && (
-                  <>
-                    <p className="font-bold text-white italic">Effective Date: February 2026</p>
-                    <p>This Privacy Policy explains how information may be collected, used, stored, and protected during the beta phase. By joining our community or using the App, you acknowledge this policy.</p>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">1. Information We May Collect</h3>
-                      <ul className="list-disc pl-5 space-y-2">
-                        <li>Name, email address, or contact details</li>
-                        <li>Feedback, survey responses, and feature requests</li>
-                        <li>Device information and usage analytics</li>
-                        <li>Community interactions (Discord participation)</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">2. How Information Is Used</h3>
-                      <p>Information is used to provide beta access, improve functionality, analyze usage trends, and communicate updates. Information will not be sold during the beta phase.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">3. Data Security</h3>
-                      <p>Reasonable safeguards are used to protect information. However, beta environments may carry elevated risk compared to fully released platforms.</p>
-                    </div>
-                  </>
-                )}
-
-                {modalContent === 'terms' && (
-                  <>
-                    <p className="font-bold text-white italic">Effective Date: February 2026</p>
-                    <p>These Terms govern access to and use of this platform during its beta phase. By accessing beta features, you agree to these Terms.</p>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">1. Eligibility</h3>
-                      <p>You must be at least 18 years old to use the platform. By accessing the App, you confirm you meet this requirement.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">2. Prohibited Conduct</h3>
-                      <p>You agree not to manipulate rankings, misrepresent performance, attempt unauthorized access, or use the platform for illegal trading activity.</p>
-                    </div>
-                    <div>
-                      <h3 className="text-white uppercase text-xs font-black tracking-widest mb-4">3. Limitation of Liability</h3>
-                      <p>To the fullest extent permitted by law, the platform shall not be liable for any financial losses, damages, or data loss arising from use of the beta platform.</p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="p-6 bg-white/[0.02] border-t border-white/5">
-                <button 
-                  onClick={() => setModalContent(null)}
-                  className="w-full py-4 bg-white text-black font-black uppercase tracking-widest rounded-xl hover:bg-gray-200 transition-all text-sm"
-                >
-                  I Understand & Accept
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* ORIGINAL MODALS */}
+      {/* MODALS */}
       <AnimatePresence>
         {(isWaitlistOpen || isCommunityOpen) && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-lg bg-[#0F172A] border border-white/10 rounded-[2.5rem] p-12 relative shadow-2xl overflow-hidden">
-               <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]" />
-              <button onClick={() => {setIsWaitlistOpen(false); setIsCommunityOpen(false)}} className="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors z-20"><X /></button>
+          <motion.div 
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/90 backdrop-blur-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
+              animate={{ opacity: 1, scale: 1, y: 0 }} 
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full max-w-lg bg-[#0F172A] border border-white/10 rounded-[2.5rem] p-12 relative shadow-2xl overflow-hidden"
+            >
+              <motion.div 
+                className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px]"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <button 
+                onClick={() => {setIsWaitlistOpen(false); setIsCommunityOpen(false)}} 
+                className="absolute top-8 right-8 text-gray-500 hover:text-white transition-colors z-20"
+              >
+                <X />
+              </button>
               <div className="text-center relative z-10">
-                <div className="w-20 h-20 bg-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.4)]"><Globe size={40} /></div>
-                <h2 className="text-4xl font-black mb-4 uppercase">{isWaitlistOpen ? 'Join Us' : 'Join our Discord'}</h2>
-                <p className="text-gray-400 mb-10 font-medium">{isWaitlistOpen ? 'Join our Private Beta Launch' : 'Connect with our developers'}</p>
-                <button onClick={() => window.open(isWaitlistOpen ? 'https://docs.google.com/forms/d/e/1FAIpQLSeBvIwjEm6FUCQY0Q7qP6LtXajMW2Ck1P3o5Eiey9n-2UNo-w/viewform?usp=sharing&ouid=118404071316243259979' : 'https://discord.gg/vQ2HZ8e56F', '_blank')} className="w-full py-5 bg-blue-600 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-500 transition-all">
-                  {isWaitlistOpen ? 'Go to Form' : 'Go to Discord'}
-                </button>
+                <motion.div 
+                  className="w-20 h-20 bg-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.4)]"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring" }}
+                >
+                  <Globe size={40} />
+                </motion.div>
+                <h2 className="text-4xl font-black mb-4 uppercase">{isWaitlistOpen ? 'Join the Waitlist' : 'Join our Discord'}</h2>
+                <p className="text-gray-400 mb-10 font-medium">{isWaitlistOpen ? 'Be first to know when we launch' : 'Connect with our community'}</p>
+                <motion.button 
+                  onClick={() => window.open(isWaitlistOpen ? 'https://docs.google.com/forms/d/e/1FAIpQLSeBvIwjEm6FUCQY0Q7qP6LtXajMW2Ck1P3o5Eiey9n-2UNo-w/viewform?usp=sharing&ouid=118404071316243259979' : 'https://discord.gg/vQ2HZ8e56F', '_blank')} 
+                  className="w-full py-5 bg-blue-600 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-500 transition-all"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {isWaitlistOpen ? 'Join Now' : 'Join Discord'}
+                </motion.button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
